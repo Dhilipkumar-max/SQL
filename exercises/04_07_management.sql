@@ -31,15 +31,183 @@ END //
 DELIMITER ;
 
 -- 6. Order Table (IN, ALL, ANY)
-CREATE TABLE orders (o_id INT PRIMARY KEY, total DECIMAL(10,2));
-SELECT * FROM orders WHERE total > ANY (SELECT total FROM orders WHERE total < 1000);
-SELECT * FROM orders WHERE total > ALL (SELECT total FROM orders WHERE total < 500);
+---------------------------------------------------
+-- CREATE ORDER TABLE
+---------------------------------------------------
 
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_name VARCHAR(50),
+    product_name VARCHAR(50),
+    amount DECIMAL(10,2)
+);
+
+---------------------------------------------------
+-- INSERT SAMPLE DATA
+---------------------------------------------------
+
+INSERT INTO orders VALUES
+(1, 'Arun', 'Laptop', 55000),
+(2, 'Bala', 'Mobile', 20000),
+(3, 'Charan', 'Tablet', 30000),
+(4, 'David', 'Headphone', 5000),
+(5, 'Elan', 'Monitor', 25000);
+
+---------------------------------------------------
+-- USING IN OPERATOR
+---------------------------------------------------
+
+-- Display orders for Laptop and Mobile
+
+SELECT *
+FROM orders
+WHERE product_name IN ('Laptop', 'Mobile');
+
+---------------------------------------------------
+-- USING ANY OPERATOR
+---------------------------------------------------
+
+-- Find products with amount greater than ANY product
+-- whose amount is below 25000
+
+SELECT *
+FROM orders
+WHERE amount > ANY (
+    SELECT amount
+    FROM orders
+    WHERE amount < 25000
+);
+
+---------------------------------------------------
+-- USING ALL OPERATOR
+---------------------------------------------------
+
+-- Find products with amount greater than ALL products
+-- whose amount is below 25000
+
+SELECT *
+FROM orders
+WHERE amount > ALL (
+    SELECT amount
+    FROM orders
+    WHERE amount < 25000
+);
+
+---------------------------------------------------
+-- DISPLAY TABLE
+---------------------------------------------------
+
+SELECT * FROM orders;
 -- 7. Retail Management (Triggers and Functions)
-CREATE TABLE inventory (p_id INT PRIMARY KEY, p_name VARCHAR(50), price DECIMAL(10,2), stock INT);
-CREATE TABLE sales_log (s_id INT PRIMARY KEY, p_id INT, qty INT);
+---------------------------------------------------
+-- RETAIL MANAGEMENT SYSTEM
+-- USING TRIGGERS AND FUNCTIONS
+---------------------------------------------------
 
-CREATE TRIGGER after_sale AFTER INSERT ON sales_log FOR EACH ROW
+---------------------------------------------------
+-- 1. CREATE PRODUCT TABLE
+---------------------------------------------------
+
+CREATE TABLE product (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(50),
+    stock INT,
+    price DECIMAL(10,2)
+);
+
+---------------------------------------------------
+-- 2. CREATE CUSTOMER TABLE
+---------------------------------------------------
+
+CREATE TABLE customer (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(50)
+);
+
+---------------------------------------------------
+-- 3. CREATE SALES TABLE
+---------------------------------------------------
+
+CREATE TABLE sales (
+    sale_id INT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    quantity INT,
+    sale_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
+);
+
+---------------------------------------------------
+-- 4. INSERT SAMPLE DATA
+---------------------------------------------------
+
+INSERT INTO product VALUES
+(1, 'Laptop', 10, 55000),
+(2, 'Mobile', 20, 20000);
+
+INSERT INTO customer VALUES
+(101, 'Arun'),
+(102, 'Bala');
+
+---------------------------------------------------
+-- 5. CREATE TRIGGER
+-- Reduce stock after product sale
+---------------------------------------------------
+
+DELIMITER $$
+
+CREATE TRIGGER trg_reduce_stock
+AFTER INSERT ON sales
+FOR EACH ROW
 BEGIN
-    UPDATE inventory SET stock = stock - NEW.qty WHERE p_id = NEW.p_id;
-END;
+    UPDATE product
+    SET stock = stock - NEW.quantity
+    WHERE product_id = NEW.product_id;
+END$$
+
+DELIMITER ;
+
+---------------------------------------------------
+-- 6. INSERT SALE RECORD
+---------------------------------------------------
+
+INSERT INTO sales VALUES
+(1001, 101, 1, 2, '2025-05-12');
+
+---------------------------------------------------
+-- 7. CREATE FUNCTION
+-- Calculate total price
+---------------------------------------------------
+
+DELIMITER $$
+
+CREATE FUNCTION total_amount(pid INT, qty INT)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(10,2);
+
+    SELECT price * qty
+    INTO total
+    FROM product
+    WHERE product_id = pid;
+
+    RETURN total;
+END$$
+
+DELIMITER ;
+
+---------------------------------------------------
+-- 8. CALL FUNCTION
+---------------------------------------------------
+
+SELECT total_amount(1, 2) AS total_bill;
+
+---------------------------------------------------
+-- 9. DISPLAY TABLES
+---------------------------------------------------
+
+SELECT * FROM product;
+SELECT * FROM customer;
+SELECT * FROM sales;
