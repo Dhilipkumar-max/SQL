@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Lab Manual | GFG Style</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 19H20V12H22V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V12H4V19ZM14 9V15H10V9H5L12 2L19 9H14Z" fill="#0F9D58"/>
+            </svg>
+            SQL <span>Labs</span>
+        </div>
+        <nav>
+            <span style="color: var(--text-secondary); font-size: 0.9rem;">Course: Database Management Systems</span>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero animate-fade">
+            <h1>SQL Lab Solutions</h1>
+            <p>A comprehensive guide to SQL exercises including Joins, Triggers, Functions, and Normalization with a modern premium interface.</p>
+        </section>
+
+        <div class="exercise-grid" id="exerciseGrid">
+            <!-- Cards will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal for Exercise Details -->
+    <div class="modal" id="modal">
+        <div class="modal-content animate-slide">
+            <div class="modal-header">
+                <h2 id="modalTitle">Exercise Title</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
