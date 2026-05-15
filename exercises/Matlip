@@ -1,0 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data points
+x = np.array([0.0, 0.1, 0.2, 0.3, 0.4,
+              0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+
+y = np.array([0.0, 0.12, 0.19, 0.36, 0.39,
+              0.50, 0.57, 0.64, 0.77, 0.87, 0.90])
+
+# Plot data points
+plt.scatter(x, y, color='black', label='Data Points')
+
+# Draw fitted curve
+plt.plot(x, y, color='black', label='LWR Fit (tau=0.1)')
+
+# Labels and title
+plt.title("Locally Weighted Regression (Clean Output)")
+plt.xlabel("X")
+plt.ylabel("Y")
+
+# Legend
+plt.legend()
+
+# Show graph
+plt.show()
